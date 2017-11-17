@@ -6,15 +6,22 @@ const { drags } = require('./drags')
 const { zooms } = require('./zooms')
 
 function baseInteractionsFromEvents (targetEl, options) {
+  console.log("in baseInteractionsFromEvents!");
   const defaults = {
     preventScroll: true
   }
   options = Object.assign({}, defaults, options)
 
   const mouseDowns$ = fromEvent('mousedown', targetEl)
-  const mouseUps$ = fromEvent('mouseup', targetEl)
+
+  //const mouseUps$ = fromEvent('mouseup', targetEl)
+  const mouseUps$ = fromEvent('mouseup', document) // *not* targetEl!
+
   // const mouseLeaves$ = fromEvent('mouseleave', targetEl).merge(fromEvent('mouseout', targetEl))
-  const mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
+
+  //const mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
+  const mouseMoves$ = fromEvent('mousemove', document) // *not* targetEl!
+
   const rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
 
   const touchStarts$ = fromEvent('touchstart', targetEl)
@@ -46,6 +53,8 @@ function baseInteractionsFromEvents (targetEl, options) {
     fromEvent('mousewheel', targetEl)
   ).map(normalizeWheel)
 
+
+  console.log("out baseInteractionsFromEvents");
   return {
     mouseDowns$,
     mouseUps$,
